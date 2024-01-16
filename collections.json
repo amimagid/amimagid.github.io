@@ -1,0 +1,626 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/v1/collections": {
+      "post": {
+        "operationId": "create",
+        "summary": "Create a new collection",
+        "description": "Create a new collection from a predefined template",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCollectionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Collection was create successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCollectionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/v1/collections/{id}": {
+      "get": {
+        "operationId": "getCollection",
+        "summary": "Returns a collection",
+        "description": "Returns a collection by it`s id. If the collection is not found, an error is thrown",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The collection id. This is the identifier of the collection in the Fireblocks",
+            "example": "fbfbfbfb-fbfb-fbfb-fbfb-fbfbfbfbfbfb",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collection fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/v1/collections/{id}/tokens": {
+      "get": {
+        "operationId": "geTokens",
+        "summary": "Returns all tokens from this collection",
+        "description": "Returns all tokens from this collection (paginated)",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The collection id. This is the identifier of the collection in the Fireblocks",
+            "example": "fbfbfbfb-fbfb-fbfb-fbfb-fbfbfbfbfbfb",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageCursor",
+            "required": false,
+            "in": "query",
+            "description": "Page cursor to get the next page, for example - \"MjAyMy0xMi0xMyAyMDozNjowOC4zMDI=:MTEwMA==\"",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Number of items per page (max 100), requesting more then 100 will return 100 items",
+            "example": 10,
+            "schema": {
+              "minimum": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CollectionTokenDto"
+                      }
+                    },
+                    "paging": {
+                      "$ref": "#/components/schemas/Paging"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "mint",
+        "summary": "Mint a new token(s) for this collection",
+        "description": "Mint a new token(s) for this collection. Can be a single token or multiple tokens to multiple addresses",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The collection id. This is the identifier of the collection in the Fireblocks",
+            "example": "fbfbfbfb-fbfb-fbfb-fbfb-fbfbfbfbfbfb",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/MintData"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Mint request initiated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/v1/collections/{id}/tokens/{tokenId}": {
+      "get": {
+        "operationId": "getToken",
+        "summary": "Returns token`s data",
+        "description": "Returns token`s data from a collection along side the collection data",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The collection id. This is the identifier of the collection in the Fireblocks",
+            "example": "fbfbfbfb-fbfb-fbfb-fbfb-fbfbfbfbfbfb",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "description": "The token id",
+            "example": "11",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionAndTokenDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "collections"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Tokenization Service API",
+    "description": "Tokenization Service",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "CollectionMetadata": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "example": "MYL",
+            "description": "The symbol of the collection"
+          },
+          "name": {
+            "type": "string",
+            "example": "My Royalties Collection",
+            "description": "The name of the collection"
+          }
+        },
+        "required": [
+          "symbol",
+          "name"
+        ]
+      },
+      "CreateCollectionDto": {
+        "type": "object",
+        "properties": {
+          "creatorVaultAccountId": {
+            "type": "string",
+            "example": "0",
+            "description": "The id of the vault account of the deployer of this contract. It will be, by default, the vault account of the owner of the collection"
+          },
+          "blockchainId": {
+            "type": "string",
+            "example": "B7QG017M",
+            "description": "The id of the blockchain you want to create the collection on"
+          },
+          "templateType": {
+            "enum": [
+              "ERC721",
+              "ERC721A",
+              "ERC1155"
+            ],
+            "type": "string",
+            "example": "ERC721",
+            "description": "The standard used to deploy this contract"
+          },
+          "metadata": {
+            "description": "The metadata related to this collection, like name and symbol..",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CollectionMetadata"
+              }
+            ]
+          }
+        },
+        "required": [
+          "creatorVaultAccountId",
+          "blockchainId",
+          "templateType",
+          "metadata"
+        ]
+      },
+      "CreateCollectionResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The collection id. This is the identifier of the collection in the Fireblocks",
+            "example": "fbfbfbfb-fbfb-fbfb-fbfb-fbfbfbfbfbfb"
+          },
+          "txId": {
+            "type": "string",
+            "example": "b70701f4-d7b1-4795-a8ee-b09cdb5b850d",
+            "description": "The transaction id of the outgoing transaction that creates the collection"
+          }
+        },
+        "required": [
+          "id",
+          "txId"
+        ]
+      },
+      "CollectionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The collection id. This is the identifier of the collection in the Fireblocks",
+            "example": "fbfbfbfb-fbfb-fbfb-fbfb-fbfbfbfbfbfb"
+          },
+          "status": {
+            "enum": [
+              "PENDING_CREATION",
+              "CREATED",
+              "FAILED_CREATION"
+            ],
+            "type": "string",
+            "description": "The collection creation status",
+            "example": "CREATED"
+          },
+          "metadata": {
+            "description": "The metadata related to this collection, like name and symbol..",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CollectionMetadata"
+              }
+            ]
+          },
+          "contractAddress": {
+            "type": "string",
+            "description": "The address of the collection contract on chain. Can be empty if the collection is not yet created",
+            "example": "0x1234567890abcdef1234567890abcdef12345678"
+          },
+          "blockchainId": {
+            "type": "string",
+            "example": "B7QG017M",
+            "description": "The id of the blockchain this collection is deployed on"
+          },
+          "templateType": {
+            "enum": [
+              "ERC721",
+              "ERC721A",
+              "ERC1155"
+            ],
+            "type": "string",
+            "example": "ERC721",
+            "description": "The standard used to deploy this contract"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "metadata",
+          "blockchainId",
+          "templateType"
+        ]
+      },
+      "Paging": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "type": "string",
+            "description": "Page cursor to get the next page"
+          }
+        },
+        "required": [
+          "next"
+        ]
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": [
+              "VAULT_ACCOUNT",
+              "ONE_TIME_ADDRESS"
+            ],
+            "type": "string",
+            "example": "VAULT_ACCOUNT",
+            "description": "The type of this account"
+          },
+          "value": {
+            "type": "string",
+            "example": "0 if VAULT_ACCOUNT, 0xb9b49008049027c5d8048084278d0ff8aaa81234 if ONE_TIME_ADDRESS",
+            "description": "If the type is VAULT_ACCOUNT - vaultAccountId, if the type is ONE_TIME_ADDRESS - the on chain address"
+          }
+        },
+        "required": [
+          "type",
+          "value"
+        ]
+      },
+      "TokenMetadataTraitDto": {
+        "type": "object",
+        "properties": {
+          "traitType": {
+            "type": "string",
+            "example": "Coolness Factor",
+            "description": "The type of the trait for this token"
+          },
+          "displayType": {
+            "type": "string",
+            "example": "number",
+            "description": "The type of the value of the trait"
+          },
+          "value": {
+            "type": "string",
+            "example": "50",
+            "description": "The value of the trait"
+          }
+        },
+        "required": [
+          "traitType",
+          "displayType",
+          "value"
+        ]
+      },
+      "TokenMetadataDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Loyalty#11",
+            "description": "The name of this specific token"
+          },
+          "mediaUrl": {
+            "type": "string",
+            "example": "ipfs://bafybeici33zihbwca2uplfuv7pbcghu5gbweoo5rd4spbrcakurbty/11",
+            "description": "The media URL of this specific token"
+          },
+          "description": {
+            "type": "string",
+            "example": "An ownership on this token represents xyz",
+            "description": "A general description of this specific token"
+          },
+          "animationUrl": {
+            "type": "string",
+            "example": "ipfs://bafybeici33zihbwca2uplfuv7pbcghu5gbweoo5rd4spbrcakurbty/11",
+            "description": "The animation URL of this specific token"
+          },
+          "attributes": {
+            "description": "Attributes describing this token. Aligns with Opensea`s metadata standards",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TokenMetadataTraitDto"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "description"
+        ]
+      },
+      "CollectionTokenDto": {
+        "type": "object",
+        "properties": {
+          "ownerAccount": {
+            "description": "The account of the token owner. will be omitted for ERC1155 ",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Account"
+              }
+            ]
+          },
+          "tokenId": {
+            "type": "string",
+            "description": "The token id",
+            "example": "11"
+          },
+          "metadataUri": {
+            "type": "string",
+            "description": "The token`s metadata uri",
+            "example": "ipfs://bafybeici33zihbwca2uplfuv7pbcghu5gbweoo5rd4spbrcakurbty/11"
+          },
+          "metadataAttributes": {
+            "description": "The token`s metadata attributes",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenMetadataDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "ownerAccount",
+          "tokenId"
+        ]
+      },
+      "Metadata": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": [
+              "uri",
+              "data"
+            ],
+            "type": "string",
+            "description": "The type of metadata added. Choose `uri` if you already have the link, or choose data if you want it to be created and uploaded for you",
+            "example": "data"
+          },
+          "uri": {
+            "type": "string",
+            "description": "The token`s metadata uri",
+            "example": "ipfs://bafybeici33zihbwca2uplfuv7pbcghu5gbweoo5rd4spbrcakurbty/11"
+          },
+          "data": {
+            "description": "The token`s metadata. It will upload the metadata and will send the uri to the mint function",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenMetadataDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "MintData": {
+        "type": "object",
+        "properties": {
+          "tokenId": {
+            "type": "string",
+            "description": "The token id to mint in case this is an ERC1155 contract, or the tokenId to burn",
+            "example": "11"
+          },
+          "amount": {
+            "type": "number",
+            "description": "The amount of the `tokenId` you want to mint or burn (in case it is an ERC1155 contract)",
+            "example": 5000
+          },
+          "metadata": {
+            "description": "The token`s metadata",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Metadata"
+              }
+            ]
+          },
+          "recipient": {
+            "description": "The recipient account for this token ",
+            "example": "`0xb9b49008049027c5d8048084278d0ff8aaa81234` for ONE_TIME_ADDRESS  OR `0` for VAULT_ACCOUNT",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Account"
+              }
+            ]
+          }
+        },
+        "required": [
+          "metadata",
+          "recipient"
+        ]
+      },
+      "TransactionDto": {
+        "type": "object",
+        "properties": {
+          "txId": {
+            "type": "string",
+            "description": "The transaction id of the transaction you created. Can be used for status checking",
+            "example": "b70701f4-d7b1-4795-a8ee-b09cdb5b850d"
+          }
+        },
+        "required": [
+          "txId"
+        ]
+      },
+      "CollectionAndTokenDto": {
+        "type": "object",
+        "properties": {
+          "tokenData": {
+            "$ref": "#/components/schemas/CollectionTokenDto"
+          },
+          "collectionData": {
+            "$ref": "#/components/schemas/CollectionDto"
+          }
+        },
+        "required": [
+          "tokenData",
+          "collectionData"
+        ]
+      }
+    }
+  }
+}
